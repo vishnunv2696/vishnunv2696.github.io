@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vishnu N V — GIS Analyst &amp; Spatial Data Engineer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #09090d; color: #e4e4e7; }
+    .leaflet-container { font-family: 'Inter', system-ui, -apple-system, sans-serif; z-index: 10; background: #111118; }
+    .hero-mesh {
+      background-color: #09090d;
+      background-image:
+        radial-gradient(ellipse 60% 50% at 15% 30%, rgba(139, 92, 246, 0.24), transparent 65%),
+        radial-gradient(ellipse 50% 45% at 85% 60%, rgba(245, 158, 11, 0.14), transparent 65%),
+        radial-gradient(circle at 50% 10%, rgba(168, 85, 247, 0.14), transparent 50%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+    }
+    .accent-gradient {
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #f59e0b 100%);
+    }
+    .accent-text {
+      background: linear-gradient(135deg, #c4b5fd 0%, #e879f9 50%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass-card {
+      background: rgba(20, 20, 28, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+    }
+    .role-fade {
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    .role-fade.is-fading {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    .gis-icon-item {
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
+    .gis-icon-item.is-highlighted {
+      transform: translateY(-4px) scale(1.06);
+      filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.55));
+    }
+  </style>
+</head>
+<body class="bg-[#09090d] text-zinc-200 antialiased selection:bg-violet-500/40 selection:text-white">
+
+  <!-- Modern Floating Pill Navigation -->
+  <header class="sticky top-0 z-40 py-3 px-4 sm:px-6 bg-[#09090d]/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+      <a href="#about" class="flex items-center gap-2.5 font-bold text-white tracking-tight">
+        <span class="w-8 h-8 rounded-lg accent-gradient text-white flex items-center justify-center text-xs font-extrabold shadow-lg shadow-violet-500/20">VN</span>
+        <span>Vishnu N V</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs font-medium text-zinc-300">
+        <a href="#about" class="px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">About</a>
+        <a href="#experience" class="px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">Experience</a>
+        <a href="#projects" class="px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">Projects</a>
+        <a href="#map-explorer" class="px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">Project Map</a>
+        <a href="#skills" class="px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">Tech Stack</a>
+        <a href="#credentials" class="px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">Credentials</a>
+        <a href="#contact" class="px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white transition-colors">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="https://www.linkedin.com/in/vishnunvofficial/" target="_blank" rel="noopener noreferrer"
+           class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full accent-gradient text-white text-xs font-semibold shadow-md shadow-violet-500/20 hover:opacity-90 transition-opacity">
+          LinkedIn Profile
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+        </a>
+        <button id="mobile-menu-btn" type="button" aria-label="Toggle navigation menu"
+                class="md:hidden p-2 rounded-lg text-zinc-300 hover:bg-white/10">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden mt-3 rounded-2xl border border-white/10 bg-[#12121a] px-4 py-3 space-y-2 text-sm font-medium text-zinc-300">
+      <a href="#about" class="block py-1.5 hover:text-white mobile-nav-link">About</a>
+      <a href="#experience" class="block py-1.5 hover:text-white mobile-nav-link">Experience</a>
+      <a href="#projects" class="block py-1.5 hover:text-white mobile-nav-link">Projects (8)</a>
+      <a href="#map-explorer" class="block py-1.5 hover:text-white mobile-nav-link">Interactive Project Map</a>
+      <a href="#skills" class="block py-1.5 hover:text-white mobile-nav-link">Tech Stack</a>
+      <a href="#credentials" class="block py-1.5 hover:text-white mobile-nav-link">Credentials &amp; Education</a>
+      <a href="#contact" class="block py-1.5 hover:text-white mobile-nav-link">Contact</a>
+      <a href="https://www.linkedin.com/in/vishnunvofficial/" target="_blank" rel="noopener noreferrer" class="block py-1.5 text-amber-300 font-semibold">LinkedIn Profile</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="about" class="hero-mesh relative overflow-hidden pt-14 pb-16 sm:pt-20 sm:pb-20 border-b border-white/5">
+    <canvas id="hero-flow-canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-65"></canvas>
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.05] border border-violet-400/30 text-violet-200 text-xs font-semibold mb-5">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          FME Certified GIS Professional • Kozhikode, Kerala, India • Open to Opportunities
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight text-white">
+          Hello, I am <span class="accent-text">Vishnu N V</span>
+        </h1>
+        <p class="mt-2.5 text-lg sm:text-xl font-semibold text-zinc-300 flex items-center gap-2 min-h-[2rem]">
+          <span class="w-1.5 h-5 rounded-full accent-gradient inline-block shrink-0"></span>
+          <span id="rotating-role" class="role-fade text-violet-200">GIS Analyst &amp; Spatial Data Engineer</span>
+        </p>
+        <p class="mt-4 text-zinc-400 text-base sm:text-lg leading-relaxed">
+          FME Certified GIS professional with <strong class="text-white">6+ years of experience</strong> delivering geospatial solutions across government and private sectors—specializing in <strong class="text-white">FME workflow automation</strong>, <strong class="text-white">ArcGIS Enterprise/Online</strong> web maps &amp; dashboards, <strong class="text-white">ArcGIS Pro geoprocessing</strong>, and <strong class="text-white">electric utility network</strong> &amp; asset management projects.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="#projects" class="px-5 py-2.5 rounded-full accent-gradient text-white font-semibold text-sm shadow-lg shadow-violet-500/20 hover:opacity-90 transition-opacity">
+            Explore Featured Case Studies
+          </a>
+          <a href="#map-explorer" class="px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-white font-semibold text-sm transition-colors">
+            View Project Map
+          </a>
+          <button id="copy-location-btn" type="button" class="px-4 py-2.5 rounded-full bg-transparent hover:bg-white/[0.06] border border-white/10 text-zinc-300 font-medium text-sm transition-colors">
+            Copy Portfolio Summary
+          </button>
+        </div>
+      </div>
+
+      <!-- GIS Platform Showcase Strip -->
+      <div class="mt-12 rounded-2xl glass-card p-5 sm:p-6">
+        <div class="grid grid-cols-3 sm:grid-cols-7 gap-4 items-center justify-items-center text-center">
+          <!-- FME Form -->
+          <button type="button" data-tool-filter="FME" title="Filter projects using FME" class="gis-icon-item flex flex-col items-center gap-2 cursor-pointer rounded-xl p-2 hover:bg-white/5 focus:outline-none">
+            <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="32" cy="32" r="24" stroke="#00C4F0" stroke-width="4.5"/>
+              <circle cx="32" cy="32" r="16" stroke="#00C4F0" stroke-width="4.5"/>
+              <circle cx="32" cy="32" r="8" fill="#00C4F0"/>
+            </svg>
+            <span class="text-xs font-medium text-zinc-300">FME Form</span>
+          </button>
+          <!-- ArcGIS Pro -->
+          <button type="button" data-tool-filter="ArcGIS Pro" title="Filter projects using ArcGIS Pro" class="gis-icon-item flex flex-col items-center gap-2 cursor-pointer rounded-xl p-2 hover:bg-white/5 focus:outline-none">
+            <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="32,6 56,19 56,45 32,58 8,45 8,19" fill="#1D7AFC" stroke="#60A5FA" stroke-width="2"/>
+              <circle cx="32" cy="32" r="13" fill="#ffffff" fill-opacity="0.95"/>
+              <path d="M23 30C26 26 30 27 32 24C34 27 40 28 41 33C38 36 35 40 31 41C27 39 22 35 23 30Z" fill="#1D7AFC"/>
+            </svg>
+            <span class="text-xs font-medium text-zinc-300">ArcGIS Pro</span>
+          </button>
+          <!-- ArcGIS Online -->
+          <button type="button" data-tool-filter="ArcGIS Online" title="Filter projects using ArcGIS Online" class="gis-icon-item flex flex-col items-center gap-2 cursor-pointer rounded-xl p-2 hover:bg-white/5 focus:outline-none">
+            <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="32,6 56,19 56,45 32,58 8,45 8,19" fill="#2563EB" stroke="#93C5FD" stroke-width="2"/>
+              <path d="M22 36C19.5 36 18 34 18 31.8C18 29.6 19.7 27.8 21.8 27.6C22.6 24.4 25.5 22 29 22C33.1 22 36.4 25.3 36.5 29.4C38.8 29.7 40.5 31.6 40.5 34C40.5 36.5 38.5 38.5 36 38.5H22V36Z" fill="#ffffff"/>
+              <polygon points="32,33 44,39 32,45 20,39" fill="#93C5FD"/>
+            </svg>
+            <span class="text-xs font-medium text-zinc-300">ArcGIS Online</span>
+          </button>
+          <!-- ArcGIS Enterprise -->
+          <button type="button" data-tool-filter="ArcGIS Enterprise" title="Filter projects using ArcGIS Enterprise" class="gis-icon-item flex flex-col items-center gap-2 cursor-pointer rounded-xl p-2 hover:bg-white/5 focus:outline-none">
+            <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="32,6 56,19 56,45 32,58 8,45 8,19" fill="#7C3AED" stroke="#C4B5FD" stroke-width="2"/>
+              <polygon points="32,19 44,26 44,38 32,45 20,38 20,26" stroke="#ffffff" stroke-width="3.5" fill="none"/>
+              <circle cx="32" cy="32" r="4.5" fill="#ffffff"/>
+            </svg>
+            <span class="text-xs font-medium text-zinc-300">ArcGIS Enterprise</span>
+          </button>
+          <!-- ArcMap -->
+          <button type="button" data-tool-filter="ArcMap" title="Filter projects using ArcMap" class="gis-icon-item flex flex-col items-center gap-2 cursor-pointer rounded-xl p-2 hover:bg-white/5 focus:outline-none">
+            <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="20" fill="#2563EB"/>
+              <path d="M18 24C22 19 29 18 33 22C35 24 34 29 29 31C24 33 22 39 18 36C15 33 15 27 18 24Z" fill="#4ADE80"/>
+              <path d="M36 20C41 21 46 27 45 33C44 38 38 42 35 38C33 35 37 29 34 25C33 23 34 20 36 20Z" fill="#4ADE80"/>
+              <circle cx="34" cy="33" r="10" fill="#BAE6FD" fill-opacity="0.7" stroke="#E2E8F0" stroke-width="2.5"/>
+              <line x1="41" y1="40" x2="52" y2="51" stroke="#CBD5E1" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <span class="text-xs font-medium text-zinc-300">ArcMap</span>
+          </button>
+          <!-- QGIS -->
+          <button type="button" data-tool-filter="QGIS" title="Filter projects using QGIS" class="gis-icon-item flex flex-col items-center gap-2 cursor-pointer rounded-xl p-2 hover:bg-white/5 focus:outline-none">
+            <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="18" stroke="#84CC16" stroke-width="8"/>
+              <path d="M32 32L52 52" stroke="#F59E0B" stroke-width="7" stroke-linecap="round"/>
+              <path d="M30 30L42 42" stroke="#65A30D" stroke-width="7" stroke-linecap="round"/>
+            </svg>
+            <span class="text-xs font-medium text-zinc-300">QGIS</span>
+          </button>
+          <!-- Postgres / PostGIS -->
+          <button type="button" data-tool-filter="PostGIS" title="Filter projects using PostGIS" class="gis-icon-item flex flex-col items-center gap-2 col-span-3 sm:col-span-1 cursor-pointer rounded-xl p-2 hover:bg-white/5 focus:outline-none">
+            <svg class="w-11 h-11" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="32" cy="17" rx="18" ry="7" fill="#336791" stroke="#93C5FD" stroke-width="2"/>
+              <path d="M14 17V45C14 48.9 22.1 52 32 52C41.9 52 50 48.9 50 45V17" fill="#254E70" stroke="#93C5FD" stroke-width="2"/>
+              <path d="M14 31C14 34.9 22.1 38 32 38C41.9 38 50 34.9 50 31" stroke="#93C5FD" stroke-width="1.8" stroke-dasharray="3 2"/>
+              <circle cx="32" cy="32" r="8" fill="#0EA5E9" fill-opacity="0.9" stroke="#E0F2FE" stroke-width="1.5"/>
+              <ellipse cx="32" cy="32" rx="3.5" ry="8" stroke="#E0F2FE" stroke-width="1.2"/>
+              <line x1="24" y1="32" x2="40" y2="32" stroke="#E0F2FE" stroke-width="1.2"/>
+            </svg>
+            <span class="text-xs font-medium text-zinc-300">Postgres / PostGIS</span>
+          </button>
+        </div>
+        <p class="mt-5 pt-4 border-t border-white/10 text-center text-xs sm:text-sm text-zinc-300 font-mono tracking-wide">
+          &ldquo;Driven by passion, I leverage GIS tools to transform data into actionable solutions. Let&rsquo;s team up and create projects that redefine the landscape of innovation!&rdquo;
+        </p>
+        <p class="mt-2 text-center text-[11px] text-violet-300/80">
+          Tip: Click any platform icon above to jump directly to matching project case studies.
+        </p>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-2xl glass-card p-4">
+          <div class="text-2xl sm:text-3xl font-extrabold text-white">6+ Years</div>
+          <div class="text-xs sm:text-sm text-zinc-400 mt-1">Genpact &amp; UL Technology Solutions</div>
+        </div>
+        <div class="rounded-2xl glass-card p-4">
+          <div class="text-2xl sm:text-3xl font-extrabold accent-text">100+ Projects</div>
+          <div class="text-xs sm:text-sm text-zinc-400 mt-1">Utility, Gov &amp; Spatial ETL Deliveries</div>
+        </div>
+        <div class="rounded-2xl glass-card p-4">
+          <div class="text-2xl sm:text-3xl font-extrabold text-violet-300">FME Certified</div>
+          <div class="text-xs sm:text-sm text-zinc-400 mt-1">Safe Software Certified Professional</div>
+        </div>
+        <div class="rounded-2xl glass-card p-4">
+          <div class="text-2xl sm:text-3xl font-extrabold text-amber-300">MSc Geology</div>
+          <div class="text-xs sm:text-sm text-zinc-400 mt-1">Calicut University (2017–2019)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work Experience Section -->
+  <section id="experience" class="py-14 sm:py-16 bg-[#0d0d13] border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white">Work Experience</h2>
+        <p class="text-zinc-400 mt-1 text-sm sm:text-base">
+          Professional roles, client engagements, and core geospatial responsibilities from my CV.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Genpact -->
+        <div class="rounded-2xl glass-card p-6 sm:p-8 border border-violet-500/25">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 border-b border-white/10">
+            <div>
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold accent-gradient text-white mb-2">Most Recent Role</span>
+              <h3 class="text-xl font-bold text-white">Business Analyst – GIS</h3>
+              <p class="text-sm font-semibold text-violet-300 mt-0.5">Genpact • Client: Osmose Utilities Services</p>
+            </div>
+            <div class="text-xs sm:text-sm font-semibold text-zinc-200 bg-white/[0.06] px-3.5 py-1.5 rounded-full border border-white/10 self-start sm:self-center">
+              Sep 2024 – Aug 2026
+            </div>
+          </div>
+
+          <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-zinc-300 leading-relaxed">
+            <div class="rounded-xl p-4 bg-white/[0.03] border border-white/10">
+              <h4 class="font-bold text-white mb-2">Electric Utility GIS &amp; Analysis</h4>
+              <ul class="space-y-1.5 text-zinc-400">
+                <li>• Worked on electric utility GIS projects supporting inspection services (<strong class="text-zinc-200">DPIT, TPIT, DPINT, TPINT, SSI, and PAD</strong>), performing geoprocessing and spatial data analysis using <strong class="text-zinc-200">ArcGIS Pro</strong> and <strong class="text-zinc-200">FME workflows</strong>.</li>
+                <li>• Managed <strong class="text-zinc-200">TPK &amp; MBTiles</strong> tile creation, circuit trace-out review, and work packet generation for utility network operations.</li>
+                <li>• Published spatial data on <strong class="text-zinc-200">ArcGIS Online / Portal</strong> and ran <strong class="text-zinc-200">custom Python tools</strong> to support utility geoprocessing and analysis.</li>
+              </ul>
+            </div>
+            <div class="rounded-xl p-4 bg-white/[0.03] border border-white/10">
+              <h4 class="font-bold text-white mb-2">QA/QC &amp; Client Coordination</h4>
+              <ul class="space-y-1.5 text-zinc-400">
+                <li>• Conducted QA/QC to ensure data accuracy and compliance with quality standards through <strong class="text-zinc-200">FME- and Python-based validation processes</strong>.</li>
+                <li>• Coordinated directly with clients to gather requirements, provide status updates, and resolve technical issues efficiently.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- UL Technology Solutions -->
+        <div class="rounded-2xl glass-card p-6 sm:p-8">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 border-b border-white/10">
+            <div>
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-zinc-300 mb-2">Previous Role</span>
+              <h3 class="text-xl font-bold text-white">GIS Analyst</h3>
+              <p class="text-sm font-semibold text-amber-300 mt-0.5">UL Technology Solutions • Client: Kerala State Government</p>
+            </div>
+            <div class="text-xs sm:text-sm font-semibold text-zinc-300 bg-white/[0.05] px-3.5 py-1.5 rounded-full border border-white/10 self-start sm:self-center">
+              03/02/2020 – 26/09/2024
+            </div>
+          </div>
+
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-zinc-300 leading-relaxed">
+            <div class="rounded-xl p-4 bg-white/[0.03] border border-white/10">
+              <h4 class="font-bold text-white mb-2">Enterprise Web GIS &amp; GeoServer</h4>
+              <ul class="space-y-1.5 text-zinc-400">
+                <li>• Establish and manage hosted feature layers, web maps, Experience Builder web apps, and dashboards on <strong class="text-zinc-200">ArcGIS Enterprise 11.2</strong> and <strong class="text-zinc-200">ArcGIS Online</strong>.</li>
+                <li>• Configure enterprise geodatabases with versioning, privileges, data registration, hosting, and publishing on <strong class="text-zinc-200">ArcGIS Server &amp; Portal</strong>.</li>
+                <li>• Administer <strong class="text-zinc-200">GeoServer</strong> workspaces, PostGIS data stores, users, groups, roles, privileges, and layer styling.</li>
+              </ul>
+            </div>
+
+            <div class="rounded-xl p-4 bg-white/[0.03] border border-white/10">
+              <h4 class="font-bold text-white mb-2">Automation, Workflows &amp; Data Modeling</h4>
+              <ul class="space-y-1.5 text-zinc-400">
+                <li>• Develop and design custom spatial and non-spatial data workflows using <strong class="text-zinc-200">FME Desktop</strong> and <strong class="text-zinc-200">FME Flow Hosted</strong>.</li>
+                <li>• Build <strong class="text-zinc-200">ArcGIS Pro ModelBuilder</strong> workflows and convert them into reusable script tools.</li>
+                <li>• Configure type/subtype domains (range &amp; code), attribute rules, and geodatabase creation, updates, and maintenance.</li>
+              </ul>
+            </div>
+
+            <div class="rounded-xl p-4 bg-white/[0.03] border border-white/10">
+              <h4 class="font-bold text-white mb-2">Field GIS &amp; Surveyor Training</h4>
+              <ul class="space-y-1.5 text-zinc-400">
+                <li>• Host API services using <strong class="text-zinc-200">PostGIS</strong> and establish seamless connectivity with <strong class="text-zinc-200">QField</strong> inside QGIS.</li>
+                <li>• Design <strong class="text-zinc-200">ArcGIS Field Maps</strong> with <strong class="text-zinc-200">Arcade</strong> expressions and attribute-rule data workflows.</li>
+                <li>• Train field surveyors on <strong class="text-zinc-200">ArcGIS Collector</strong>, <strong class="text-zinc-200">QField</strong>, and <strong class="text-zinc-200">ArcGIS Field Maps</strong>.</li>
+              </ul>
+            </div>
+
+            <div class="rounded-xl p-4 bg-white/[0.03] border border-white/10">
+              <h4 class="font-bold text-white mb-2">Vector, Raster Process &amp; Topology</h4>
+              <ul class="space-y-1.5 text-zinc-400">
+                <li>• Perform CRS transformations, data type conversions, splitting, merging, joining, and clipping across <strong class="text-zinc-200">ArcGIS Pro, ArcMap, FME, and QGIS</strong>.</li>
+                <li>• Execute raster georeferencing, classification, clipping, mosaicking, satellite extraction, and cartographic composition.</li>
+                <li>• Conduct digital transformation and <strong class="text-zinc-200">topology validation</strong> for transportation, pipeline networks, and urban areas.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-14 sm:py-16 max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white">Featured GIS Case Studies</h2>
+        <p class="text-zinc-400 mt-1 text-sm sm:text-base">
+          Filter by domain or click any project to inspect the full workflow, tools, and map location.
+        </p>
+      </div>
+      <div class="w-full md:w-64">
+        <input id="project-search" type="search" placeholder="Search tools or projects..."
+               class="w-full px-4 py-2 rounded-full border border-white/10 bg-white/[0.04] text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500" />
+      </div>
+    </div>
+
+    <!-- Filter Pills -->
+    <div id="filter-bar" class="flex flex-wrap gap-2 mb-8">
+      <button type="button" data-filter="all" class="filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold accent-gradient text-white transition-all">All (8)</button>
+      <button type="button" data-filter="Enterprise & Web GIS" class="filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors">Enterprise &amp; Web GIS</button>
+      <button type="button" data-filter="Geoprocessing & Mapping" class="filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors">Geoprocessing &amp; Mapping</button>
+      <button type="button" data-filter="FME & ETL" class="filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors">FME &amp; ETL</button>
+      <button type="button" data-filter="Open Source & Field" class="filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors">Open Source &amp; Field</button>
+    </div>
+
+    <!-- Project Grid -->
+    <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <div id="empty-projects" class="hidden text-center py-12 glass-card rounded-2xl text-zinc-400 text-sm">
+      No projects match that filter or search keyword.
+    </div>
+  </section>
+
+  <!-- Interactive Project Map Section -->
+  <section id="map-explorer" class="py-14 bg-[#0d0d13] border-y border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">Interactive Project Footprint</h2>
+          <p class="text-zinc-400 text-sm mt-1">
+            Drag to pan, scroll or use +/- to zoom, and click any glowing marker across the USA (TX &amp; NM) and India.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="focus-us-btn" type="button"
+                  class="px-3.5 py-2 rounded-full border border-amber-400/30 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-semibold text-amber-200 transition-colors">
+            US Utilities (TX &amp; NM)
+          </button>
+          <button id="focus-india-btn" type="button"
+                  class="px-3.5 py-2 rounded-full border border-violet-400/30 bg-violet-500/10 hover:bg-violet-500/20 text-xs font-semibold text-violet-200 transition-colors">
+            India Projects
+          </button>
+          <button id="reset-map-btn" type="button"
+                  class="px-4 py-2 rounded-full accent-gradient text-xs font-semibold text-white transition-opacity hover:opacity-90">
+            Fit All
+          </button>
+        </div>
+      </div>
+
+      <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-[#0b0b12] shadow-2xl">
+        <div id="gis-map" class="w-full relative select-none cursor-grab active:cursor-grabbing" style="height: 460px;">
+          <div id="map-loading" class="absolute inset-0 flex items-center justify-center text-xs text-zinc-400 pointer-events-none">
+            Loading interactive vector map...
+          </div>
+        </div>
+
+        <!-- Zoom Controls -->
+        <div class="absolute top-4 left-4 z-20 flex flex-col gap-1.5">
+          <button id="zoom-in-btn" type="button" aria-label="Zoom in" class="w-8 h-8 rounded-lg bg-[#14141d]/90 border border-white/15 text-white font-bold text-sm hover:bg-white/15 flex items-center justify-center">+</button>
+          <button id="zoom-out-btn" type="button" aria-label="Zoom out" class="w-8 h-8 rounded-lg bg-[#14141d]/90 border border-white/15 text-white font-bold text-sm hover:bg-white/15 flex items-center justify-center">−</button>
+        </div>
+
+        <!-- Legend -->
+        <div class="absolute bottom-4 left-4 z-20 flex items-center gap-4 px-3.5 py-2 rounded-full bg-[#14141d]/90 border border-white/10 text-xs text-zinc-300 backdrop-blur">
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span> US Electric Utilities</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-violet-400 inline-block"></span> India GIS Projects</span>
+        </div>
+
+        <!-- Hover Tooltip -->
+        <div id="map-tooltip" class="hidden absolute z-30 pointer-events-none px-3 py-1.5 rounded-lg bg-[#181824] border border-white/15 text-xs text-white shadow-xl"></div>
+
+        <!-- Selected Marker Popup Card -->
+        <div id="map-popup" class="hidden absolute bottom-4 right-4 z-30 w-72 sm:w-80 rounded-2xl bg-[#14141d]/95 border border-violet-400/35 p-4 shadow-2xl backdrop-blur-md">
+          <div class="flex items-start justify-between gap-2">
+            <span id="map-popup-cat" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 text-violet-300"></span>
+            <button id="map-popup-close" type="button" aria-label="Close map popup" class="text-zinc-400 hover:text-white text-xs px-1.5 py-0.5 rounded">✕</button>
+          </div>
+          <h4 id="map-popup-title" class="text-sm font-bold text-white mt-2 leading-snug"></h4>
+          <p id="map-popup-loc" class="text-xs text-zinc-400 mt-0.5"></p>
+          <p id="map-popup-summary" class="text-xs text-zinc-300 mt-2 leading-relaxed"></p>
+          <button id="map-popup-open" type="button" class="mt-3 px-3.5 py-1.5 rounded-full accent-gradient text-white text-xs font-semibold hover:opacity-90 transition-opacity">
+            Open Case Study →
+          </button>
+        </div>
+      </div>
+
+      <p class="mt-2.5 text-xs text-zinc-500">
+        Interactive vector map powered by D3.js &amp; Natural Earth TopoJSON (no external tile servers required). CDAC All-India POI/LOI/GOI workflow covers nationwide datasets.
+      </p>
+    </div>
+  </section>
+
+  <!-- Technical Skills Section -->
+  <section id="skills" class="py-14 sm:py-16 max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="mb-8">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white">Technical Stack &amp; Workflows</h2>
+      <p class="text-zinc-400 mt-1 text-sm sm:text-base">
+        Core platforms, databases, and automation tools used across production GIS deliveries.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="glass-card rounded-2xl p-5 hover:border-violet-400/40 transition-colors">
+        <div class="w-9 h-9 rounded-lg bg-amber-500/15 border border-amber-400/30 text-amber-300 flex items-center justify-center font-bold text-xs mb-3">ETL</div>
+        <h3 class="font-bold text-white text-base">Spatial ETL &amp; QC/QA</h3>
+        <ul class="mt-3 space-y-1.5 text-sm text-zinc-400">
+          <li>• FME Desktop / Form</li>
+          <li>• FME Flow Hosted</li>
+          <li>• ModelBuilder to Script Tools</li>
+          <li>• Topology Validation &amp; Correction</li>
+          <li>• Schema &amp; CRS Transformations</li>
+        </ul>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 hover:border-violet-400/40 transition-colors">
+        <div class="w-9 h-9 rounded-lg bg-sky-500/15 border border-sky-400/30 text-sky-300 flex items-center justify-center font-bold text-xs mb-3">ESRI</div>
+        <h3 class="font-bold text-white text-base">ArcGIS Ecosystem</h3>
+        <ul class="mt-3 space-y-1.5 text-sm text-zinc-400">
+          <li>• ArcGIS Pro &amp; ArcMap</li>
+          <li>• ArcGIS Enterprise 11.2 &amp; Portal</li>
+          <li>• ArcGIS Online &amp; Experience Builder</li>
+          <li>• ArcGIS Field Maps (Arcade)</li>
+          <li>• Versioned Geodatabases &amp; Domains</li>
+        </ul>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 hover:border-violet-400/40 transition-colors">
+        <div class="w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 flex items-center justify-center font-bold text-xs mb-3">OSS</div>
+        <h3 class="font-bold text-white text-base">Open-Source &amp; Web GIS</h3>
+        <ul class="mt-3 space-y-1.5 text-sm text-zinc-400">
+          <li>• QGIS &amp; Custom Plugins</li>
+          <li>• PostGIS Spatial Databases</li>
+          <li>• GeoServer (Workspaces &amp; Styling)</li>
+          <li>• QField Mobile Customization</li>
+          <li>• Leaflet / qgis2web Publishing</li>
+        </ul>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 hover:border-violet-400/40 transition-colors">
+        <div class="w-9 h-9 rounded-lg bg-violet-500/15 border border-violet-400/30 text-violet-300 flex items-center justify-center font-bold text-xs mb-3">RS</div>
+        <h3 class="font-bold text-white text-base">Drone, Raster &amp; Digitization Process</h3>
+        <ul class="mt-3 space-y-1.5 text-sm text-zinc-400">
+          <li>• Agisoft Metashape</li>
+          <li>• LULC Digitization &amp; Georeferencing</li>
+          <li>• Raster Classification &amp; Mosaicking</li>
+          <li>• SAS Planet &amp; Google Earth</li>
+          <li>• Surveyor Training &amp; QA</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent R&D Spotlight -->
+  <section id="research" class="py-12 bg-[#0d0d13] border-y border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="rounded-2xl glass-card border border-violet-500/30 p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/15 border border-violet-400/30 text-violet-300 text-xs font-semibold mb-3">
+            Recent R&amp;D &amp; LinkedIn Publications
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">AI-Assisted GIS (MCP) &amp; Advanced FME Automation</h2>
+          <p class="mt-2.5 text-sm sm:text-base text-zinc-400 leading-relaxed">
+            Currently researching and testing the <strong class="text-white">Model Context Protocol (MCP)</strong> to connect <strong class="text-amber-300">Claude AI</strong> directly with <strong class="text-white">ArcGIS Pro</strong> and <strong class="text-white">QGIS</strong> for AI-assisted geoprocessing, alongside building next-generation <strong class="text-white">FME workflows</strong>. Sharing hands-on experiments and workflow demos on LinkedIn.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-violet-200 text-xs font-semibold">Model Context Protocol (MCP)</span>
+            <span class="px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-sky-200 text-xs font-semibold">Claude AI + ArcGIS Pro</span>
+            <span class="px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-emerald-200 text-xs font-semibold">Claude AI + QGIS</span>
+            <span class="px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-amber-200 text-xs font-semibold">FME Workflow R&amp;D</span>
+          </div>
+        </div>
+        <div class="shrink-0">
+          <a href="https://www.linkedin.com/in/vishnunvofficial/" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 px-5 py-3 rounded-full accent-gradient text-white font-bold text-sm shadow-lg shadow-violet-500/20 hover:opacity-90 transition-opacity">
+            Read Posts on LinkedIn
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Credentials & Education Section -->
+  <section id="credentials" class="py-14 max-w-6xl mx-auto px-4 sm:px-6">
+    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-8">Certifications &amp; Education</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="glass-card rounded-2xl p-6">
+        <h3 class="font-bold text-white text-lg mb-4">Professional Certifications</h3>
+        <ul class="space-y-3 text-sm text-zinc-300">
+          <li class="flex items-start gap-2.5">
+            <span class="mt-1.5 w-2 h-2 rounded-full bg-violet-400 shrink-0"></span>
+            <span><strong class="text-white">FME Certified Professional</strong> — Safe Software (2022–2025)</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="mt-1.5 w-2 h-2 rounded-full bg-violet-400 shrink-0"></span>
+            <span><strong class="text-white">Oracle Cloud Infrastructure 2023 AI Certified Foundations Associate</strong></span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="mt-1.5 w-2 h-2 rounded-full bg-violet-400 shrink-0"></span>
+            <span><strong class="text-white">Esri MOOC &amp; Workflows:</strong> ArcGIS Pro Essential Workflows, Sharing Content to ArcGIS Enterprise, Online Dashboards &amp; Story Maps</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="mt-1.5 w-2 h-2 rounded-full bg-violet-400 shrink-0"></span>
+            <span><strong class="text-white">Open-Source Training:</strong> QField Quickstart &amp; GeoServer from A–Z</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="font-bold text-white text-lg mb-4">Education &amp; Seminars</h3>
+          <div class="border-l-2 border-violet-500 pl-4 mb-5">
+            <div class="text-xs font-semibold text-violet-300 uppercase tracking-wide">2017 – 2019</div>
+            <div class="font-bold text-white mt-0.5">MSc, Applied Geology</div>
+            <div class="text-sm text-zinc-400">Calicut University, Kerala, India</div>
+          </div>
+          <div class="border-l-2 border-zinc-700 pl-4">
+            <div class="text-xs font-semibold text-zinc-400 uppercase tracking-wide">National Seminar</div>
+            <div class="font-semibold text-white mt-0.5">Popularisation of Remote Sensing Based Maps &amp; Geospatial Information</div>
+            <div class="text-sm text-zinc-400">ISRS &amp; ISRO</div>
+          </div>
+        </div>
+        <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-zinc-400">
+          <span>Languages: Malayalam, English, Tamil</span>
+          <a href="https://www.linkedin.com/in/vishnunvofficial/" target="_blank" rel="noopener noreferrer" class="text-amber-300 font-semibold hover:underline">Connect on LinkedIn →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Internship & Field Experience Section -->
+  <section id="internship" class="py-12 bg-[#0d0d13] border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-6">Internships &amp; Field Experience</h2>
+      <div class="rounded-2xl glass-card p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <div>
+            <h3 class="text-lg font-bold text-white">GIS &amp; Geological Field Mapping Internship</h3>
+            <p class="text-sm font-medium text-zinc-400">Chitradurga &amp; Bengaluru (Karnataka) • Rajasthan &amp; Madhya Pradesh</p>
+          </div>
+          <span class="text-xs font-semibold text-zinc-300 bg-white/[0.06] px-3 py-1 rounded-full border border-white/10 self-start sm:self-center">Academic Fieldwork</span>
+        </div>
+        <ul class="space-y-1.5 text-sm text-zinc-400">
+          <li>• Introduction to GIS and practical application of GPS for geological and spatial field mapping in Chitradurga and Bengaluru.</li>
+          <li>• Industrial geological visits: RSSML Phosphate Mine (Jhamarkotra), Panna Diamond Mine (Madhya Pradesh), and Sanu Limestone (Rajasthan).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recognition & Achievements Section -->
+  <section id="recognition" class="py-12 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="rounded-2xl glass-card border border-amber-400/30 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="inline-block px-3 py-0.5 rounded-full text-xs font-semibold bg-amber-500/15 border border-amber-400/30 text-amber-300 mb-2">Recognition &amp; Achievements</span>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Letter of Appreciation (2025)</h2>
+          <p class="text-sm font-semibold text-amber-300 mt-0.5">Delimitation Commission of Kerala</p>
+          <p class="mt-2 text-sm sm:text-base text-zinc-400 leading-relaxed">
+            Recognized for meticulous coordination and technical precision in the state-wide ward delimitation process across Kerala.
+          </p>
+        </div>
+        <div class="shrink-0 text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-500/10 px-4 py-2 rounded-full border border-amber-400/30 self-start sm:self-center">
+          2025 Award
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-14 bg-[#0d0d13] border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="rounded-2xl glass-card border border-violet-500/25 p-6 sm:p-8">
+        <div class="max-w-2xl mb-6">
+          <span class="inline-block px-3 py-0.5 rounded-full text-xs font-semibold bg-violet-500/15 border border-violet-400/30 text-violet-300 mb-2">Get in Touch</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">Let&rsquo;s Connect</h2>
+          <p class="text-sm sm:text-base text-zinc-400 mt-1.5">
+            Available for GIS Analyst, FME Automation, and Spatial Data Engineering roles. Reach out directly on LinkedIn.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Location & Availability Card -->
+          <div class="rounded-xl bg-white/[0.03] border border-white/10 p-5 flex flex-col justify-between gap-3">
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-wider text-zinc-500">Location &amp; Availability</div>
+              <div class="mt-1 text-base font-semibold text-white">Kozhikode, Kerala, India</div>
+              <p class="mt-1 text-xs text-zinc-400">Available immediately for GIS Analyst, FME Automation, and Spatial Data Engineering roles.</p>
+            </div>
+          </div>
+
+          <!-- LinkedIn Card -->
+          <div class="rounded-xl bg-white/[0.03] border border-white/10 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-wider text-zinc-500">LinkedIn</div>
+              <div class="mt-1 text-sm font-semibold text-white">linkedin.com/in/vishnunvofficial</div>
+              <p class="mt-1 text-xs text-zinc-400">Message me directly for my CV, email, or project walkthroughs.</p>
+            </div>
+            <a href="https://www.linkedin.com/in/vishnunvofficial/" target="_blank" rel="noopener noreferrer"
+               class="shrink-0 self-start sm:self-center px-5 py-2.5 rounded-full accent-gradient text-xs font-semibold text-white hover:opacity-90 transition-opacity">
+              Message on LinkedIn →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Study Modal -->
+  <div id="project-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#14141d] rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-white/10">
+      <div class="sticky top-0 bg-[#14141d]/95 backdrop-blur border-b border-white/10 px-6 py-4 flex items-start justify-between gap-4">
+        <div>
+          <span id="modal-category" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-500/20 text-violet-300 border border-violet-400/30 mb-1.5"></span>
+          <h3 id="modal-title" class="text-xl font-bold text-white"></h3>
+          <p id="modal-location" class="text-xs text-zinc-400 mt-0.5"></p>
+        </div>
+        <button id="close-modal-btn" type="button" aria-label="Close modal" class="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-5 text-sm text-zinc-300 leading-relaxed">
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">Project Overview</h4>
+          <p id="modal-overview"></p>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">My Role &amp; Technical Workflow</h4>
+          <p id="modal-role"></p>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2">Tools &amp; Technologies</h4>
+          <div id="modal-tools" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+      <div class="px-6 py-4 bg-white/[0.02] border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+        <button id="modal-locate-btn" type="button" class="px-4 py-2 rounded-full accent-gradient text-white text-xs font-semibold hover:opacity-90 transition-opacity">
+          Locate on Interactive Map
+        </button>
+        <button id="modal-done-btn" type="button" class="px-4 py-2 rounded-full border border-white/15 bg-white/[0.05] hover:bg-white/10 text-zinc-200 text-xs font-semibold transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-full bg-zinc-900 border border-violet-400/40 text-white text-xs font-medium shadow-lg"></div>
+
+  <script>
+    const PROJECTS = [
+      {
+        id: 'electric-utility-osmose',
+        title: 'Electric Utility Network Projects (Osmose Utilities)',
+        category: 'FME & ETL',
+        location: 'Texas & New Mexico, USA (Genpact)',
+        coords: [31.481342, -99.325278],
+        extraCoords: [{ coords: [35.0844, -106.6504], label: 'New Mexico, USA (Electric Utility)' }],
+        summary: 'ArcGIS Pro geoprocessing for utility inspection services (DPIT, TPIT, DPINT, TPINT, SSI, PAD), paired with FME QA/QC, tile creation, circuit trace-out review, and work packet generation.',
+        overview: 'Delivered as Business Analyst – GIS at Genpact for client Osmose Utilities Services, supporting large-scale electric utility network operations with strict spatial data accuracy and standardized deliverables.',
+        role: 'Performed ArcGIS Pro geoprocessing, ran custom Python tools, and published spatial data on ArcGIS Online/Portal supporting utility inspection services (DPIT, TPIT, DPINT, TPINT, SSI, and PAD); executed automated FME- and Python-based QA/QC validation; generated TPK and MBTiles packages alongside circuit trace-out reviews and work packet generation; and coordinated directly with client stakeholders.',
+        tools: ['ArcGIS Pro', 'Python Tools', 'TPK & MBTiles', 'ArcGIS Online / Portal', 'FME QA/QC']
+      },
+      {
+        id: 'lsgd-mapping',
+        title: 'GIS Mapping for Local Government Bodies (LSGD)',
+        category: 'Geoprocessing & Mapping',
+        location: 'Multi-District Kerala (Kozhikode, Malappuram, Kasaragod, Thrissur, Alappuzha, TVM)',
+        coords: [11.258753, 75.780410],
+        extraCoords: [
+          { coords: [12.5000, 75.0000], label: 'Kasaragod District (LSGD Mapping)' },
+          { coords: [11.0417, 76.0794], label: 'Malappuram District (LSGD Mapping)' },
+          { coords: [10.5276, 76.2144], label: 'Thrissur District (LSGD Mapping)' },
+          { coords: [9.4981, 76.3388], label: 'Alappuzha District (LSGD Mapping)' },
+          { coords: [8.508262, 76.953072], label: 'Thiruvananthapuram District (LSGD Mapping)' }
+        ],
+        summary: 'Drone-based base mapping, asset & household socio-economic surveys, LULC digitization, and full QA/QC for smart local governance.',
+        overview: 'A smart-governance transformation initiative for Local Self-Government Departments (LSGD) supporting tax management, urban planning, utilities, transportation, and e-governance. High-resolution drone imagery was processed to build a terrain and land-feature base map, integrated with field-surveyed road networks, drainage systems, streetlights, and geotagged household tax/socio-economic records.',
+        role: 'Digitized Land Use and Land Cover (LULC) layers, extracted road networks, spatially corrected field-surveyed vector data, and led end-to-end Quality Control and Quality Assurance (QC/QA) across all LSGD assets and household survey layers.',
+        tools: ['FME Workflows', 'Drone Imagery', 'LULC Digitization', 'ArcMap / QGIS', 'QC / QA']
+      },
+      {
+        id: 'akalapuzha-stream',
+        title: 'Akalapuzha Stream Conservation GIS Mapping',
+        category: 'Geoprocessing & Mapping',
+        location: 'Chelannur, Kozhikode, Kerala',
+        coords: [11.357631, 75.807721],
+        summary: 'Drone-assisted river corridor mapping integrating FMB records to assess riverbank walls, depth, waste/sewage routes, and width changes.',
+        overview: 'A comprehensive environmental conservation initiative along the Chelannur Akalapuzha stream in Kerala. The project mapped river depth at regular intervals, side width and length, bridges, roads, and riverbank composition—including protective wall materials, unprotected stretches, waste deposits, sewage routes, salinity/water quality indicators, and temporal width changes.',
+        role: 'Processed drone imagery and integrated spatial reference data from the Field Measurement Book (FMB) of Chelannur Local Block Panchayat to produce actionable conservation layers for sustainable stream management.',
+        tools: ['FME Workflows', 'Drone Photogrammetry', 'FMB Integration', 'Hydrology Mapping', 'QGIS / ArcGIS']
+      },
+      {
+        id: 'lepton-pune',
+        title: 'LEPTON — Urban Parcel & Infrastructure Cataloguing',
+        category: 'Geoprocessing & Mapping',
+        location: 'Yewalewadi – Kondhwa Budruk, Pune, Maharashtra',
+        coords: [18.449519, 73.886055],
+        summary: 'High-precision digital cataloguing of building footprints and land parcels from satellite imagery for urban planning.',
+        overview: 'LEPTON focused on digitally mapping and cataloguing building infrastructure and land parcels across Yewalewadi–Kondhwa Budruk in Pune, Maharashtra, creating structured digital records to improve urban planning and resource allocation.',
+        role: 'Utilized ArcGIS and high-resolution satellite imagery to digitize building footprints, delineate land parcels, and maintain clean attribute schemas for urban infrastructure analysis.',
+        tools: ['ArcGIS Pro', 'Satellite Imagery', 'Parcel Digitization', 'Geodatabase Management']
+      },
+      {
+        id: 'kwa-geoasset',
+        title: 'KWA GeoAsset Mapping (Surface & Sub-Surface Water Assets)',
+        category: 'Geoprocessing & Mapping',
+        location: 'Ernakulam District, Kerala',
+        coords: [9.9800, 76.2602],
+        summary: 'Georeferencing PDF utility maps, digitizing water pipeline networks, topology validation, and QA/QC for Kerala Water Authority.',
+        overview: 'A district-wide utility mapping project for the Kerala Water Authority (KWA) in Ernakulam to build a reliable geospatial inventory of both surface and sub-surface water supply assets for efficient maintenance and network planning.',
+        role: 'Downloaded, processed, and spatially corrected surveyed utility data; georeferenced legacy PDF pipeline maps; digitized pipeline routes and asset attributes; and executed topology correction and strict QC/QA validation.',
+        tools: ['FME Workflows', 'ArcGIS Pro', 'Georeferencing', 'Topology Validation', 'Utility Network QA/QC']
+      },
+      {
+        id: 'k-smart-engine',
+        title: 'K-Smart — GIS Smart Engine for Building Permits',
+        category: 'Enterprise & Web GIS',
+        location: 'All Kerala (Statewide — IKM / LSGD)',
+        coords: [10.5276, 76.2144],
+        isStatewideKerala: true,
+        summary: 'ArcGIS Enterprise publishing, survey form web maps, and Experience Builder web app powering Kerala’s K-Smart building permit module.',
+        overview: 'Developed by Information Kerala Mission (IKM) for Kerala Local Government, K-Smart streamlines LSGD workflows and includes a dedicated GIS module for building permits so government staff and citizens can easily verify land regulations.',
+        role: 'Georeferenced land board geospatial data for accurate map alignment, published corrected layers to ArcGIS Enterprise, configured web maps for survey forms, and built the Experience Builder web application integrated into K-Smart.',
+        tools: ['FME Workflows', 'ArcGIS Enterprise 11.2', 'Experience Builder', 'ArcGIS Server & Portal', 'Georeferencing']
+      },
+      {
+        id: 'cdac-qc-qa',
+        title: 'CDAC — All-India POI / LOI / GOI ETL & QC/QA Workflow',
+        category: 'FME & ETL',
+        location: 'All India (Managed from Kozhikode)',
+        coords: null,
+        summary: 'Automated FME spatial ETL pipelines transforming HERE Map OEM datasets (POI, LOI, GOI) to meet CDAC specifications.',
+        overview: 'A national-scale data conversion and management initiative focused on standardizing All-India Points of Interest (POI), Lines of Interest (LOI), and Polygons of Interest (GOI) sourced from HERE Map OEMs to meet strict CDAC specifications.',
+        role: 'Designed and automated custom FME Platform workflows for schema transformation, geometry validation, attribute standardization, and high-volume QC/QA processing.',
+        tools: ['FME Desktop', 'FME Workflows', 'HERE Map OEM Data', 'Automated QC/QA', 'Spatial ETL']
+      },
+      {
+        id: 'kerala-ward-delineation',
+        title: 'Kerala State Ward Delineation & QField Customization',
+        category: 'Open Source & Field',
+        location: 'Kerala (State Election Commission)',
+        coords: [8.508262, 76.953072],
+        summary: 'PostGIS + GeoServer + QGIS architecture paired with customized online and offline QField mobile forms for statewide electoral ward delineation.',
+        overview: 'Executed in collaboration with the State Election Commission to delineate ward boundaries across Kerala, requiring accurate field verification and centralized geospatial data management.',
+        role: 'Configured a PostGIS spatial database and GeoServer workspaces integrated with QGIS for boundary mapping and analysis. Customized the QField mobile app with automated data validation, tailored attribute forms, and online and offline collection workflows.',
+        tools: ['PostGIS', 'GeoServer', 'QGIS', 'QField', 'Online & Offline Field Validation']
+      }
+    ];
+
+    let activeFilter = 'all';
+    let searchTerm = '';
+    let selectedProject = null;
+
+    const grid = document.getElementById('projects-grid');
+    const emptyState = document.getElementById('empty-projects');
+    const searchInput = document.getElementById('project-search');
+    const modal = document.getElementById('project-modal');
+    const toast = document.getElementById('toast');
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.add('hidden'), 2600);
+    }
+
+    function renderProjects() {
+      const term = searchTerm.trim().toLowerCase();
+      const filtered = PROJECTS.filter((p) => {
+        const matchesCat = activeFilter === 'all' || p.category === activeFilter;
+        const matchesTerm = !term ||
+          p.title.toLowerCase().includes(term) ||
+          p.summary.toLowerCase().includes(term) ||
+          p.location.toLowerCase().includes(term) ||
+          p.tools.some((t) => t.toLowerCase().includes(term));
+        return matchesCat && matchesTerm;
+      });
+
+      grid.innerHTML = '';
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      filtered.forEach((p) => {
+        const card = document.createElement('article');
+        card.className = 'glass-card rounded-2xl p-5 hover:border-violet-400/50 transition-all flex flex-col justify-between';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2.5">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-500/15 text-violet-300 border border-violet-400/30">${p.category}</span>
+              <span class="text-xs text-zinc-500 font-medium truncate">${p.location}</span>
+            </div>
+            <h3 class="font-bold text-white text-base leading-snug">${p.title}</h3>
+            <p class="mt-2 text-sm text-zinc-400 leading-relaxed">${p.summary}</p>
+            <div class="mt-3.5 flex flex-wrap gap-1.5">
+              ${p.tools.slice(0, 4).map((t) => `<span class="px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/10 text-zinc-300 text-xs font-medium">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between">
+            <button type="button" data-open-id="${p.id}" class="text-xs font-semibold text-amber-300 hover:text-amber-200">
+              View Case Study →
+            </button>
+            ${p.coords ? `<button type="button" data-map-id="${p.id}" class="text-xs font-medium text-zinc-400 hover:text-white">Show on Map</button>` : `<span class="text-xs text-zinc-500">Pan-India Scope</span>`}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openModal(projectId) {
+      const p = PROJECTS.find((item) => item.id === projectId);
+      if (!p) return;
+      selectedProject = p;
+      document.getElementById('modal-category').textContent = p.category;
+      document.getElementById('modal-title').textContent = p.title;
+      document.getElementById('modal-location').textContent = p.location;
+      document.getElementById('modal-overview').textContent = p.overview;
+      document.getElementById('modal-role').textContent = p.role;
+      document.getElementById('modal-tools').innerHTML = p.tools
+        .map((t) => `<span class="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-zinc-200 text-xs font-semibold">${t}</span>`)
+        .join('');
+
+      const locateBtn = document.getElementById('modal-locate-btn');
+      if (p.coords) {
+        locateBtn.classList.remove('hidden');
+      } else {
+        locateBtn.classList.add('hidden');
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+    }
+
+    // Filter button handlers
+    document.getElementById('filter-bar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      activeFilter = btn.dataset.filter;
+      document.querySelectorAll('.filter-btn').forEach((b) => {
+        const isActive = b === btn;
+        b.className = isActive
+          ? 'filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold accent-gradient text-white transition-all'
+          : 'filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors';
+      });
+      renderProjects();
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      searchTerm = e.target.value;
+      renderProjects();
+    });
+
+    grid.addEventListener('click', (e) => {
+      const openBtn = e.target.closest('[data-open-id]');
+      if (openBtn) {
+        openModal(openBtn.dataset.openId);
+        return;
+      }
+      const mapBtn = e.target.closest('[data-map-id]');
+      if (mapBtn) {
+        focusProjectOnMap(mapBtn.dataset.mapId);
+      }
+    });
+
+    document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+    document.getElementById('modal-done-btn').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.getElementById('modal-locate-btn').addEventListener('click', () => {
+      if (selectedProject && selectedProject.coords) {
+        closeModal();
+        focusProjectOnMap(selectedProject.id);
+      }
+    });
+
+    // Mobile nav toggle
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // Copy summary button
+    document.getElementById('copy-location-btn').addEventListener('click', () => {
+      const text = 'Vishnu N V — FME Certified GIS Professional (6+ yrs | Ex-Genpact & UL Technology Solutions) | ArcGIS Pro/Enterprise, FME, QGIS, PostGIS | https://www.linkedin.com/in/vishnunvofficial/';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast('Portfolio summary copied to clipboard')).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    });
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('Portfolio summary copied to clipboard');
+      } catch (err) {
+        showToast('Could not copy automatically');
+      }
+      document.body.removeChild(ta);
+    }
+
+    // D3 + TopoJSON Interactive Vector Map (Zero tile-server dependencies)
+    const mapContainer = document.getElementById('gis-map');
+    const mapLoading = document.getElementById('map-loading');
+    const mapTooltip = document.getElementById('map-tooltip');
+    const mapPopup = document.getElementById('map-popup');
+    let popupProjectId = null;
+
+    const mapPins = [];
+    PROJECTS.filter((p) => p.coords).forEach((p) => {
+      let pinLabel = p.location;
+      if (p.id === 'electric-utility-osmose') pinLabel = 'Texas, USA (Electric Utility)';
+      else if (p.id === 'lsgd-mapping') pinLabel = 'Kozhikode District (LSGD Mapping)';
+      else if (p.id === 'k-smart-engine') pinLabel = 'All Kerala Statewide (K-Smart GIS Engine)';
+      mapPins.push({
+        project: p,
+        coords: p.coords,
+        label: pinLabel,
+        isUS: p.coords[1] < 0
+      });
+      if (p.extraCoords) {
+        p.extraCoords.forEach((ec) => {
+          mapPins.push({
+            project: p,
+            coords: ec.coords,
+            label: ec.label,
+            isUS: ec.coords[1] < 0
+          });
+        });
+      }
+    });
+
+    function showMapPopup(pin) {
+      popupProjectId = pin.project.id;
+      document.getElementById('map-popup-cat').textContent = pin.project.category;
+      document.getElementById('map-popup-title').textContent = pin.project.title;
+      document.getElementById('map-popup-loc').textContent = pin.label;
+      document.getElementById('map-popup-summary').textContent = pin.project.summary;
+      mapPopup.classList.remove('hidden');
+    }
+
+    document.getElementById('map-popup-close').addEventListener('click', () => {
+      mapPopup.classList.add('hidden');
+    });
+
+    document.getElementById('map-popup-open').addEventListener('click', () => {
+      if (popupProjectId) openModal(popupProjectId);
+    });
+
+    let svg, g, projection, pathGen, zoomBehavior, width = 960, height = 460;
+
+    function zoomToLatLng(lat, lng, scale) {
+      if (!svg || !projection || !zoomBehavior) return;
+      const [px, py] = projection([lng, lat]);
+      const transform = d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(scale)
+        .translate(-px, -py);
+      svg.transition().duration(750).call(zoomBehavior.transform, transform);
+    }
+
+    function fitRegion(lonLatPairs, maxScale = 6) {
+      if (!svg || !projection || !zoomBehavior || lonLatPairs.length === 0) return;
+      const pts = lonLatPairs.map(([lat, lng]) => projection([lng, lat]));
+      const xs = pts.map((d) => d[0]);
+      const ys = pts.map((d) => d[1]);
+      const x0 = Math.min(...xs), x1 = Math.max(...xs);
+      const y0 = Math.min(...ys), y1 = Math.max(...ys);
+      const dx = Math.max(x1 - x0, 20);
+      const dy = Math.max(y1 - y0, 20);
+      const scale = Math.min(maxScale, 0.72 / Math.max(dx / width, dy / height));
+      const cx = (x0 + x1) / 2;
+      const cy = (y0 + y1) / 2;
+      const transform = d3.zoomIdentity
+        .translate(width / 2 - scale * cx, height / 2 - scale * cy)
+        .scale(scale);
+      svg.transition().duration(750).call(zoomBehavior.transform, transform);
+    }
+
+    function focusProjectOnMap(id) {
+      const pin = mapPins.find((item) => item.project.id === id);
+      if (!pin) return;
+      document.getElementById('map-explorer').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        zoomToLatLng(pin.coords[0], pin.coords[1], pin.isUS ? 5.5 : 8);
+        showMapPopup(pin);
+      }, 350);
+    }
+
+    async function initVectorMap() {
+      width = mapContainer.clientWidth || 960;
+      height = 460;
+
+      svg = d3.select('#gis-map')
+        .append('svg')
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .attr('width', '100%')
+        .attr('height', height)
+        .style('display', 'block');
+
+      g = svg.append('g');
+
+      projection = d3.geoNaturalEarth1()
+        .scale(width / 5.4)
+        .translate([width / 2, height / 1.95]);
+
+      pathGen = d3.geoPath().projection(projection);
+
+      // Graticule grid
+      const graticule = d3.geoGraticule10();
+      g.append('path')
+        .datum(graticule)
+        .attr('d', pathGen)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(255,255,255,0.04)')
+        .attr('stroke-width', 0.6);
+
+      try {
+        const res = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json');
+        if (!res.ok) throw new Error('Map data unavailable');
+        const world = await res.json();
+        const countries = topojson.feature(world, world.objects.countries);
+
+        g.selectAll('path.country')
+          .data(countries.features)
+          .enter()
+          .append('path')
+          .attr('class', 'country')
+          .attr('d', pathGen)
+          .attr('fill', '#171724')
+          .attr('stroke', '#2e2e46')
+          .attr('stroke-width', 0.55);
+
+        mapLoading.classList.add('hidden');
+      } catch (err) {
+        mapLoading.textContent = 'Vector basemap unavailable offline — project pins remain interactive.';
+      }
+
+      // Draw glowing All-Kerala Statewide corridor for K-Smart
+      const keralaSpine = [
+        [75.0000, 12.5000],
+        [75.780410, 11.258753],
+        [76.0794, 11.0417],
+        [76.2144, 10.5276],
+        [76.2602, 9.9800],
+        [76.3388, 9.4981],
+        [76.953072, 8.508262]
+      ];
+      const lineGen = d3.line()
+        .x((d) => projection(d)[0])
+        .y((d) => projection(d)[1])
+        .curve(d3.curveCatmullRom.alpha(0.5));
+
+      g.append('path')
+        .datum(keralaSpine)
+        .attr('d', lineGen)
+        .attr('fill', 'none')
+        .attr('stroke', '#e879f9')
+        .attr('stroke-width', 2.5)
+        .attr('stroke-dasharray', '4,3')
+        .attr('opacity', 0.75)
+        .attr('class', 'kerala-spine');
+
+      // Plot Project Markers
+      const pinGroups = g.selectAll('g.pin')
+        .data(mapPins)
+        .enter()
+        .append('g')
+        .attr('class', 'pin cursor-pointer')
+        .attr('transform', (d) => {
+          const [x, y] = projection([d.coords[1], d.coords[0]]);
+          return `translate(${x}, ${y})`;
+        });
+
+      pinGroups.append('circle')
+        .attr('r', 10)
+        .attr('fill', (d) => d.isUS ? 'rgba(245, 158, 11, 0.25)' : 'rgba(139, 92, 246, 0.28)')
+        .attr('class', 'pin-halo');
+
+      pinGroups.append('circle')
+        .attr('r', 5)
+        .attr('fill', (d) => d.isUS ? '#f59e0b' : '#a78bfa')
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', 1.5)
+        .attr('class', 'pin-core');
+
+      pinGroups
+        .on('mouseenter', function(event, d) {
+          d3.select(this).select('.pin-core').attr('r', 7);
+          const rect = mapContainer.getBoundingClientRect();
+          mapTooltip.innerHTML = `<div class="font-semibold text-white">${d.project.title}</div><div class="text-zinc-400 text-[11px]">${d.label}</div>`;
+          mapTooltip.style.left = `${Math.min(event.clientX - rect.left + 12, rect.width - 220)}px`;
+          mapTooltip.style.top = `${Math.max(event.clientY - rect.top - 42, 10)}px`;
+          mapTooltip.classList.remove('hidden');
+        })
+        .on('mousemove', function(event) {
+          const rect = mapContainer.getBoundingClientRect();
+          mapTooltip.style.left = `${Math.min(event.clientX - rect.left + 12, rect.width - 220)}px`;
+          mapTooltip.style.top = `${Math.max(event.clientY - rect.top - 42, 10)}px`;
+        })
+        .on('mouseleave', function() {
+          d3.select(this).select('.pin-core').attr('r', 5);
+          mapTooltip.classList.add('hidden');
+        })
+        .on('click', (event, d) => {
+          event.stopPropagation();
+          showMapPopup(d);
+        });
+
+      zoomBehavior = d3.zoom()
+        .scaleExtent([1, 18])
+        .on('zoom', (event) => {
+          g.attr('transform', event.transform);
+          const k = event.transform.k;
+          g.selectAll('.country').attr('stroke-width', 0.55 / Math.sqrt(k));
+          g.selectAll('.pin-core').attr('r', 5 / Math.pow(k, 0.65)).attr('stroke-width', 1.5 / Math.pow(k, 0.65));
+          g.selectAll('.pin-halo').attr('r', 10 / Math.pow(k, 0.65));
+        });
+
+      svg.call(zoomBehavior);
+      svg.on('click', () => mapPopup.classList.add('hidden'));
+
+      document.getElementById('zoom-in-btn').addEventListener('click', () => {
+        svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.6);
+      });
+      document.getElementById('zoom-out-btn').addEventListener('click', () => {
+        svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.625);
+      });
+      document.getElementById('focus-us-btn').addEventListener('click', () => {
+        fitRegion([[31.481342, -99.325278], [35.0844, -106.6504]], 5.5);
+      });
+      document.getElementById('focus-india-btn').addEventListener('click', () => {
+        fitRegion(mapPins.filter((p) => !p.isUS).map((p) => p.coords), 7);
+      });
+      document.getElementById('reset-map-btn').addEventListener('click', () => {
+        svg.transition().duration(750).call(zoomBehavior.transform, d3.zoomIdentity);
+      });
+    }
+
+    initVectorMap();
+
+    // 1. Flowing Spatial Network Background Canvas
+    (function initHeroFlow() {
+      const canvas = document.getElementById('hero-flow-canvas');
+      const hero = document.getElementById('about');
+      if (!canvas || !hero) return;
+      const ctx = canvas.getContext('2d');
+      let w = 0, h = 0, nodes = [], animId = null;
+
+      function resize() {
+        w = canvas.width = hero.clientWidth;
+        h = canvas.height = hero.clientHeight;
+        const count = Math.min(48, Math.max(22, Math.floor((w * h) / 22000)));
+        nodes = Array.from({ length: count }, (_, i) => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          r: Math.random() * 1.8 + 1.2,
+          amber: i % 4 === 0
+        }));
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < nodes.length; i++) {
+          const a = nodes[i];
+          a.x += a.vx;
+          a.y += a.vy;
+          if (a.x < 0 || a.x > w) a.vx *= -1;
+          if (a.y < 0 || a.y > h) a.vy *= -1;
+
+          for (let j = i + 1; j < nodes.length; j++) {
+            const b = nodes[j];
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 145) {
+              const alpha = (1 - dist / 145) * 0.28;
+              ctx.strokeStyle = (a.amber || b.amber)
+                ? `rgba(245, 158, 11, ${alpha})`
+                : `rgba(139, 92, 246, ${alpha})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+
+          ctx.fillStyle = a.amber ? 'rgba(251, 191, 36, 0.75)' : 'rgba(167, 139, 250, 0.75)';
+          ctx.beginPath();
+          ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        animId = requestAnimationFrame(draw);
+      }
+
+      resize();
+      if (animId) cancelAnimationFrame(animId);
+      draw();
+      window.addEventListener('resize', resize);
+    })();
+
+    // 2. Automatic Rotating Role / Specialty Text
+    (function initRoleRotator() {
+      const el = document.getElementById('rotating-role');
+      if (!el) return;
+      const roles = [
+        'GIS Analyst & Spatial Data Engineer',
+        'FME Certified Workflow Architect',
+        'ArcGIS Enterprise & Pro Specialist',
+        'AI-Assisted GIS (MCP) Researcher'
+      ];
+      let idx = 0;
+      if (window.__roleTimer) clearInterval(window.__roleTimer);
+      window.__roleTimer = setInterval(() => {
+        el.classList.add('is-fading');
+        setTimeout(() => {
+          idx = (idx + 1) % roles.length;
+          el.textContent = roles[idx];
+          el.classList.remove('is-fading');
+        }, 420);
+      }, 2800);
+    })();
+
+    // 3. Sequential Platform Icon Pulse
+    (function initIconPulse() {
+      const icons = document.querySelectorAll('.gis-icon-item');
+      if (!icons.length) return;
+      let active = 0;
+      if (window.__iconTimer) clearInterval(window.__iconTimer);
+      icons[0].classList.add('is-highlighted');
+      window.__iconTimer = setInterval(() => {
+        icons[active].classList.remove('is-highlighted');
+        active = (active + 1) % icons.length;
+        icons[active].classList.add('is-highlighted');
+      }, 1900);
+    })();
+
+    // 4. Connect Hero Platform Icons -> Filter & Scroll to Featured Case Studies
+    document.querySelectorAll('[data-tool-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tool = btn.dataset.toolFilter;
+        activeFilter = 'all';
+        document.querySelectorAll('.filter-btn').forEach((b) => {
+          const isAll = b.dataset.filter === 'all';
+          b.className = isAll
+            ? 'filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold accent-gradient text-white transition-all'
+            : 'filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors';
+        });
+        searchTerm = tool;
+        searchInput.value = tool;
+        renderProjects();
+        document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        showToast(`Filtered projects using ${tool}`);
+      });
+    });
+
+    renderProjects();
+  </script>
+</body>
+</html>
