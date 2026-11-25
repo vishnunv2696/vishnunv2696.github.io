@@ -535,7 +535,7 @@
 
       <!-- R&D Filter Pills -->
       <div id="rd-filter-bar" class="flex flex-wrap gap-2 mb-7">
-        <button type="button" data-rd-filter="all" class="rd-filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold accent-gradient text-white transition-all">All Works (14)</button>
+        <button type="button" data-rd-filter="all" class="rd-filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold accent-gradient text-white transition-all">All Works (15)</button>
         <button type="button" data-rd-filter="FME & Integration" class="rd-filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors">FME &amp; Integration</button>
         <button type="button" data-rd-filter="Esri Platform" class="rd-filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors">Esri Platform</button>
         <button type="button" data-rd-filter="QGIS / Open Source" class="rd-filter-btn px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/10 transition-colors">QGIS / Open Source</button>
@@ -773,7 +773,7 @@
             </div>
           </div>
           <div id="rd-modal-output-wrap" class="hidden rounded-xl overflow-hidden border border-white/15 bg-white">
-            <iframe id="rd-modal-output-frame" title="Live FME GIS Data Catalog Output" class="w-full bg-white" style="height: 480px;" sandbox="allow-scripts allow-same-origin"></iframe>
+            <iframe id="rd-modal-output-frame" title="Live Interactive GIS Output" class="w-full bg-white" style="height: 480px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
           </div>
         </div>
         <div>
@@ -810,6 +810,11 @@
           <a id="rd-modal-link" href="https://www.linkedin.com/in/vishnunvofficial/" target="_blank" rel="noopener noreferrer"
              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full accent-gradient text-white text-xs font-semibold hover:opacity-90 transition-opacity">
             See Related Posts on LinkedIn →
+          </a>
+          <a id="rd-modal-repo" href="" target="_blank" rel="noopener noreferrer"
+             class="hidden inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-white/15 bg-white/[0.05] hover:bg-white/10 text-zinc-200 text-xs font-semibold transition-colors">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            GitHub Repo ↗
           </a>
           <button id="rd-modal-copy" type="button" class="px-3.5 py-2 rounded-full border border-white/15 bg-white/[0.05] hover:bg-white/10 text-zinc-200 text-xs font-semibold transition-colors">
             Copy Link
@@ -1556,6 +1561,40 @@
 
     const RD_WORKS = [
       {
+        id: 'rd-geovista-portal',
+        track: 'QGIS / Open Source',
+        status: 'In Production',
+        liveUrl: 'https://vishnunv2696.github.io/web-gis-spatial-portal/',
+        liveUrlLabel: 'Launch Live WebGIS Platform ↗',
+        repoUrl: 'https://github.com/vishnunv2696/web-gis-spatial-portal',
+        flowLabel: 'Open Source Spatial Data Pipeline',
+        flowBadge: 'PostGIS + REST API + Leaflet/Turf',
+        title: 'GeoVista: Interactive WebGIS Vector Platform — Built with AI-Assisted Coding',
+        summary: 'Full-stack vector WebGIS built from scratch using AI-assisted engineering. Connects locally to a PostgreSQL / PostGIS spatial database via Node.js/Express REST APIs, and features a published zero-dependency client build on GitHub Pages for live browser geoprocessing with Leaflet & Turf.js.',
+        idea: 'GeoVista was engineered from scratch with AI-assisted coding to demonstrate end-to-end modern spatial architecture. Locally, it connects directly to a PostgreSQL / PostGIS spatial database via Node.js/Express REST APIs for high-performance spatial queries and transactional data access. For public portfolio publishing on GitHub Pages, we deployed a self-contained client-side build with Turf.js geoprocessing—enabling instant in-browser vector buffering, spatial joins, and attribute analytics without live database dependencies.',
+        flowSteps: [
+          { stage: '1. PostGIS Database & REST API', tool: 'PostgreSQL / PostGIS + Express API', detail: 'Local spatial database with GIST spatial indexing and REST API endpoints handling dynamic spatial filtering and layer queries.' },
+          { stage: '2. Interactive Vector Mapping', tool: 'Leaflet 1.9 + Marker Clustering', detail: 'Renders multi-geometry vector layers (POIs, classified road networks, zone polygons) with thematic styling and basemap switching.' },
+          { stage: '3. In-Browser Geoprocessing', tool: 'Turf.js 7.0 + Spatial Algorithms', detail: 'In-browser geodesic distance buffering (m/km/mi), proximity detection, spatial joins (point-in-polygon), and multi-layer intersection analysis.' },
+          { stage: '4. Attribute Analytics & Calculator', tool: 'Field Calculator & Summary Stats', detail: 'Interactive data table with bidirectional zoom-to-feature, custom attribute formula evaluation, real-time statistics (Mean/Median/StdDev), and GeoJSON/CSV export.' }
+        ],
+        highlights: [
+          'Built from scratch with AI-assisted software engineering',
+          'Dual Architecture: Local PostgreSQL / PostGIS backend + Node.js REST API',
+          'Published GitHub Demo: Zero-dependency client-side build with bundled vector assets',
+          'Multi-geometry vector visualization & CartoDB / OSM / Satellite basemaps',
+          'Geodesic buffering, spatial join & multi-layer intersection impact analysis',
+          'Attribute Calculator, real-time summary statistics & one-click CSV export'
+        ],
+        valuePoints: [
+          { label: 'AI-assisted full-stack coding', text: 'Engineered from scratch using AI-assisted development to rapidly prototype and integrate complex PostGIS queries, REST endpoints, and client-side geoprocessing.' },
+          { label: 'PostGIS + API data access', text: 'Real enterprise architecture connects to a local PostgreSQL/PostGIS spatial database through dedicated REST APIs for indexed spatial queries.' },
+          { label: 'Frictionless web publishing', text: 'Publishes directly on GitHub Pages with bundled vector assets so anyone can test the vector tools immediately without live database credentials.' }
+        ],
+        value: 'Enterprise PostgreSQL/PostGIS spatial architecture engineered from scratch with AI-assisted coding, paired with a frictionless zero-infrastructure web publishing pipeline for client-side vector GIS analysis.',
+        stack: ['PostgreSQL / PostGIS', 'AI-Assisted Coding', 'Express REST API', 'Leaflet 1.9', 'Turf.js 7.0', 'GeoJSON']
+      },
+      {
         id: 'rd-fme-catalog',
         track: 'FME & Integration',
         status: 'In Production',
@@ -1947,7 +1986,9 @@
             <button type="button" data-rd-id="${item.id}" class="text-xs font-semibold text-amber-300 hover:text-amber-200">
               ${item.track === 'FME & Integration' ? 'FME Workflow →' : 'Inspect Workflow →'}
             </button>
-            ${item.videoUrl
+            ${item.liveUrl
+              ? `<a href="${item.liveUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] font-semibold text-emerald-300 hover:bg-emerald-500/25 transition-colors">🌐 Live Demo ↗</a>`
+              : item.videoUrl
               ? `<a href="${item.videoUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-semibold text-violet-300 hover:text-violet-200">▶ Video Demo</a>`
               : ((item.gallery || item.splitSections || item.previewImage)
                 ? `<button type="button" data-rd-images="${item.id}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] font-semibold text-emerald-300 hover:bg-emerald-500/25 transition-colors">🖼 View Images${item.gallery ? ` (${item.gallery.length})` : (item.splitSections ? ` (${item.splitSections.length})` : '')}</button>`
@@ -1971,13 +2012,32 @@
       document.getElementById('rd-modal-idea').textContent = item.idea;
 
       const isAi = item.track === 'AI & MCP';
-      document.getElementById('rd-modal-flow-label').textContent = isAi ? 'AI + MCP Interaction Flow' : 'FME Data Pipeline';
-      document.getElementById('rd-modal-flow-badge').textContent = isAi ? 'Bidirectional Agent Bridge' : 'Automated ETL Flow';
+      const isOpenSource = item.track === 'QGIS / Open Source';
+      const isEsri = item.track === 'Esri Platform';
+
+      let defaultLabel = 'Data Pipeline';
+      let defaultBadge = 'Automated Workflow';
+      if (isAi) {
+        defaultLabel = 'AI + MCP Interaction Flow';
+        defaultBadge = 'Bidirectional Agent Bridge';
+      } else if (isOpenSource) {
+        defaultLabel = 'Open Source Spatial Data Pipeline';
+        defaultBadge = 'Client-Server Spatial Architecture';
+      } else if (isEsri) {
+        defaultLabel = 'Esri Geospatial Workflow Architecture';
+        defaultBadge = 'ArcGIS Enterprise Pipeline';
+      } else if (item.track === 'FME & Integration') {
+        defaultLabel = 'FME Data Pipeline & Automation';
+        defaultBadge = 'Automated Spatial ETL Flow';
+      }
+
+      document.getElementById('rd-modal-flow-label').textContent = item.flowLabel || defaultLabel;
+      document.getElementById('rd-modal-flow-badge').textContent = item.flowBadge || defaultBadge;
 
       const flowContainer = document.getElementById('rd-modal-flow');
       const arrowChar = isAi ? '↔' : '→';
-      const accentBorder = isAi ? 'border-violet-400/30' : 'border-emerald-400/30';
-      const stageColor = isAi ? 'text-violet-300' : 'text-emerald-300';
+      const accentBorder = isAi ? 'border-violet-400/30' : (isOpenSource ? 'border-cyan-400/30' : (isEsri ? 'border-blue-400/30' : 'border-emerald-400/30'));
+      const stageColor = isAi ? 'text-violet-300' : (isOpenSource ? 'text-cyan-300' : (isEsri ? 'text-blue-300' : 'text-emerald-300'));
 
       if (item.splitSections && item.splitSections.length) {
         currentLightboxItems = item.splitSections.map((sec) => ({ src: sec.image, title: sec.title, caption: sec.detail }));
@@ -2028,7 +2088,10 @@
       }
 
       const rdLink = document.getElementById('rd-modal-link');
-      if (item.videoUrl) {
+      if (item.liveUrl) {
+        rdLink.href = item.liveUrl;
+        rdLink.textContent = item.liveUrlLabel || 'Launch Live WebGIS Platform ↗';
+      } else if (item.videoUrl) {
         rdLink.href = item.videoUrl;
         rdLink.textContent = '▶ Open Video in Drive →';
       } else if (item.referenceUrl) {
@@ -2037,6 +2100,16 @@
       } else {
         rdLink.href = 'https://www.linkedin.com/in/vishnunvofficial/';
         rdLink.textContent = 'See Related Posts on LinkedIn →';
+      }
+
+      const rdRepo = document.getElementById('rd-modal-repo');
+      if (rdRepo) {
+        if (item.repoUrl) {
+          rdRepo.href = item.repoUrl;
+          rdRepo.classList.remove('hidden');
+        } else {
+          rdRepo.classList.add('hidden');
+        }
       }
 
       const promptWrap = document.getElementById('rd-modal-prompt-wrap');
@@ -2074,7 +2147,7 @@
       const itemImages = getImagesForItem(item);
       currentLightboxItems = itemImages;
 
-      if (item.videoEmbedUrl || item.liveOutputHtml || itemImages.length) {
+      if (item.videoEmbedUrl || item.liveOutputHtml || item.liveOutputUrl || itemImages.length) {
         mediaWrap.classList.remove('hidden');
 
         if (itemImages.length) {
@@ -2091,10 +2164,18 @@
           imgPills.innerHTML = '';
         }
 
-        if (item.videoEmbedUrl || item.liveOutputHtml) {
+        if (item.videoEmbedUrl || item.liveOutputHtml || item.liveOutputUrl) {
           videoFrame.src = item.videoEmbedUrl || '';
-          outputFrame.srcdoc = item.liveOutputHtml || '';
-          if (item.videoEmbedUrl && item.liveOutputHtml) {
+          if (item.liveOutputUrl) {
+            outputFrame.src = item.liveOutputUrl;
+            outputFrame.removeAttribute('srcdoc');
+            tabOutput.textContent = item.liveOutputLabel || '🌐 Live Portal (Interactive)';
+          } else {
+            outputFrame.srcdoc = item.liveOutputHtml || '';
+            outputFrame.removeAttribute('src');
+            tabOutput.textContent = '🌐 Live FME Output (Interactive)';
+          }
+          if (item.videoEmbedUrl && (item.liveOutputHtml || item.liveOutputUrl)) {
             mediaTabs.classList.remove('hidden');
             tabVideo.onclick = () => setMediaTab('video');
             tabOutput.onclick = () => setMediaTab('output');
@@ -2109,6 +2190,7 @@
           outputWrap.classList.add('hidden');
           videoFrame.src = '';
           outputFrame.srcdoc = '';
+          outputFrame.removeAttribute('src');
         }
       } else {
         mediaWrap.classList.add('hidden');
@@ -2119,6 +2201,7 @@
         outputWrap.classList.add('hidden');
         videoFrame.src = '';
         outputFrame.srcdoc = '';
+        outputFrame.removeAttribute('src');
       }
 
       const hlWrap = document.getElementById('rd-modal-highlights-wrap');
@@ -2160,7 +2243,9 @@
     function closeRdModal() {
       rdModal.classList.add('hidden');
       document.getElementById('rd-modal-video-frame').src = '';
-      document.getElementById('rd-modal-output-frame').srcdoc = '';
+      const outFrame = document.getElementById('rd-modal-output-frame');
+      outFrame.srcdoc = '';
+      outFrame.removeAttribute('src');
     }
 
     document.getElementById('rd-filter-bar').addEventListener('click', (e) => {
