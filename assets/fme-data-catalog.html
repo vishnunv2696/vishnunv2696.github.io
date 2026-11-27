@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html>
+   <head>
+      <title>Report</title>
+      <meta charset="UTF-8">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" rel="stylesheet">
+   </head>
+   <body>
+      <div style="padding:10px;border: 1px none black">
+               <H1 style="color:rgb(85,170,255)" class="text-center">GIS Data Catalog</H1>
+               <div id="mapHTMLReportGenerator1" style="width:100%;height:500px;"></div>
+               <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.css" />
+               <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.js"></script>
+                        <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"></script>
+               <script>
+                  var map = L.map('mapHTMLReportGenerator1').setView([0, 0], 3);
+                              L.esri.basemapLayer("Streets").addTo(map);
+                  map.createPane("labels");
+                  var layer = L.geoJson(
+                     [
+           {
+             "type":"Feature",
+             "properties":{
+               "name":"utility_poles",
+               "popupContent":"utility_poles"
+             },
+             "geometry":{
+               "type":"Polygon",
+               "coordinates":[
+                 [
+                   [
+                     75.7798,
+                     11.2578
+                   ],
+                   [
+                     75.7798,
+                     11.262
+                   ],
+                   [
+                     75.7879,
+                     11.262
+                   ],
+                   [
+                     75.7879,
+                     11.2578
+                   ],
+                   [
+                     75.7798,
+                     11.2578
+                   ]
+                 ]
+               ]
+             }
+           },
+           {
+             "type":"Feature",
+             "properties":{
+               "name":"parcels",
+               "popupContent":"parcels"
+             },
+             "geometry":{
+               "type":"Polygon",
+               "coordinates":[
+                 [
+                   [
+                     75.78,
+                     11.258
+                   ],
+                   [
+                     75.78,
+                     11.261800000000001
+                   ],
+                   [
+                     75.7878,
+                     11.261800000000001
+                   ],
+                   [
+                     75.7878,
+                     11.258
+                   ],
+                   [
+                     75.78,
+                     11.258
+                   ]
+                 ]
+               ]
+             }
+           },
+           {
+             "type":"Feature",
+             "properties":{
+               "name":"Point_Buffer_100m",
+               "popupContent":"Point_Buffer_100m"
+             },
+             "geometry":{
+               "type":"Polygon",
+               "coordinates":[
+                 [
+                   [
+                     77.53772927005606,
+                     12.836826623499368
+                   ],
+                   [
+                     77.53772927005606,
+                     13.103338660494048
+                   ],
+                   [
+                     77.75830659102361,
+                     13.103338660494048
+                   ],
+                   [
+                     77.75830659102361,
+                     12.836826623499368
+                   ],
+                   [
+                     77.53772927005606,
+                     12.836826623499368
+                   ]
+                 ]
+               ]
+             }
+           },
+           {
+             "type":"Feature",
+             "properties":{
+               "name":"roads",
+               "popupContent":"roads"
+             },
+             "geometry":{
+               "type":"Polygon",
+               "coordinates":[
+                 [
+                   [
+                     75.7795,
+                     11.2575
+                   ],
+                   [
+                     75.7795,
+                     11.2625
+                   ],
+                   [
+                     75.7885,
+                     11.2625
+                   ],
+                   [
+                     75.7885,
+                     11.2575
+                   ],
+                   [
+                     75.7795,
+                     11.2575
+                   ]
+                 ]
+               ]
+             }
+           },
+           {
+             "type":"Feature",
+             "properties":{
+               "name":"bengaluru_study_area_boundary",
+               "popupContent":"bengaluru_study_area_boundary"
+             },
+             "geometry":{
+               "type":"Polygon",
+               "coordinates":[
+                 [
+                   [
+                     77.51864900000004,
+                     12.817729000000043
+                   ],
+                   [
+                     77.51864900000004,
+                     13.122411395000029
+                   ],
+                   [
+                     77.77737963100003,
+                     13.122411395000029
+                   ],
+                   [
+                     77.77737963100003,
+                     12.817729000000043
+                   ],
+                   [
+                     77.51864900000004,
+                     12.817729000000043
+                   ]
+                 ]
+               ]
+             }
+           }
+         ],
+                     {
+                         onEachFeature: function (feature, layer) {
+                             layer.bindPopup(feature.properties.popupContent);
+                         },
+                         style:{"color": "rgb(0,0,255)"},
+                         pane: "labels"
+                     }).addTo(map);
+                  map.fitBounds(layer.getBounds());
+               </script>
+               <div class="container-fluid">
+               	<div class="row">
+               		<div class="col-md-8" style="text-align:center"><canvas id="chartHTMLReportGenerator2"></canvas></div>
+               	</div>
+               </div>
+               <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+               <script>
+                  var ctx = document.getElementById("chartHTMLReportGenerator2").getContext("2d");
+                  var data ={
+           "labels":[
+             "utility_poles",
+             "parcels",
+             "Point_Buffer_100m",
+             "roads",
+             "bengaluru_study_area_boundary"
+           ],
+           "datasets":[
+             {
+               "label":"fme_feature_type.total_count",
+               "borderColor":"rgba(0,0,255,1)",
+               "borderWidth":2,
+               "backgroundColor":"rgba(0,0,255,0.5)",
+               "data":[
+                 10,
+                 8,
+                 100,
+                 6,
+                 1
+               ]
+             }
+           ]
+         };
+                  var options = {
+                     animation: false,
+                     legend: {
+                         position: 'right'
+                     },
+                     scales: {
+                         xAxes: [{
+                             display: true,
+                             scaleLabel: {labelString: 'Faeture name', display: true},
+                             ticks: {
+                                 autoSkip: false
+                             }
+                         }],
+                         yAxes: [{
+                             display: true,
+                             scaleLabel: {labelString: 'Feature count', display: true},
+                             ticks: {
+                                 beginAtZero: true
+                             }
+                         }]
+                     },
+                     tooltips: {
+                         mode: 'index'
+                     }
+                  };
+                  var MyNewChart = new Chart(ctx, {
+                     type: 'bar',
+                     data: data,
+                     options: options
+                  });
+               </script>
+               <table class="table table-bordered">
+                  <thead>
+                     <tr>
+                        <th>Layer</th>
+                        <th>CRS</th>
+                        <th>Count</th>
+                        <th>Fields</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>utility_poles</td>
+                        <td>LL84</td>
+                        <td>10</td>
+                        <td>fme_feature_type,fme_geometry,fme_type,material,pole_id,status,voltage_kv</td>
+                     </tr>
+                     <tr>
+                        <td>parcels</td>
+                        <td>LL84</td>
+                        <td>8</td>
+                        <td>fme_feature_type,area_sqm,fme_geometry,fme_type,owner_name,parcel_id,zone_code</td>
+                     </tr>
+                     <tr>
+                        <td>Point_Buffer_100m</td>
+                        <td>UTM84-44N</td>
+                        <td>100</td>
+                        <td>fme_feature_type,Added_On,Area,BUFF_DIST,Capacity,Category,City,Id,LocationAd,LocationNa,ORIG_FID,Pincode,Rating,State,Status,UniqueID,X_Coord,Y_Coord,fme_geometry,fme_type,shapefile_type</td>
+                     </tr>
+                     <tr>
+                        <td>roads</td>
+                        <td>LL84</td>
+                        <td>6</td>
+                        <td>fme_feature_type,fme_geometry,fme_type,road_id,road_name,speed_kmh,surface</td>
+                     </tr>
+                     <tr>
+                        <td>bengaluru_study_area_boundary</td>
+                        <td>_LL-WGS84_0</td>
+                        <td>1</td>
+                        <td>fme_feature_type,AreaSqKm,BoundType,BoundaryID,BoundaryNa,CRS,CentroidX,CentroidY,Country,County,CreatedDat,Id,LocationDe,PerimKm,PointCount,Region,State,Status,TimeZone,fme_geometry,fme_type,shapefile_type</td>
+                     </tr>
+                  </tbody>
+               </table>
+         <style>
+           :root { --card: #ffffff; --border: #e2e8f0; --accent: #2563eb; --text: #0f172a; --muted: #64748b; }
+           html, body { transform: none !important; filter: none !important; }
+           body { background: #f1f5f9 !important; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important; color: var(--text); margin: 0; padding-bottom: 48px; }
+           .portal-sticky-top {
+             position: fixed !important;
+             top: 0 !important;
+             left: 0 !important;
+             right: 0 !important;
+             width: 100% !important;
+             z-index: 9999 !important;
+             background: #f1f5f9 !important;
+             padding-bottom: 14px !important;
+             box-shadow: 0 4px 12px rgba(15,23,42,0.08) !important;
+             display: block !important;
+           }
+           .portal-nav { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; padding: 16px 28px; margin-bottom: 14px; border-bottom: 3px solid var(--accent); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+           .portal-nav h1 { margin: 0; font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+           .portal-nav span { font-size: 13px; color: #94a3b8; }
+           .portal-kpis {
+             display: grid !important;
+             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+             gap: 14px;
+             max-width: 1280px;
+             margin: 0 auto !important;
+             padding: 0 20px;
+             visibility: visible !important;
+             opacity: 1 !important;
+           }
+           .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; box-shadow: 0 1px 4px rgba(15,23,42,0.05); }
+           .kpi-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+           .kpi-val { font-size: 26px; font-weight: 800; color: var(--text); margin-top: 4px; }
+           .leaflet-container, canvas { background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 2px 8px rgba(15,23,42,0.05); margin-bottom: 20px; }
+           .leaflet-top.leaflet-left {
+             display: flex !important;
+             flex-direction: row !important;
+             align-items: flex-start !important;
+             gap: 8px !important;
+             padding: 10px 0 0 10px !important;
+           }
+           .leaflet-top.leaflet-left .leaflet-control {
+             margin: 0 !important;
+             float: none !important;
+             clear: none !important;
+           }
+           .map-loc-box { position: relative; background: #fff; padding: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; gap: 4px; z-index: 1000; }
+           .map-loc-box input { border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 10px; font-size: 13px; width: 200px; outline: none; }
+           .map-loc-box input:focus { border-color: var(--accent); }
+           .map-loc-box button { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+           .portal-search { width: 100%; max-width: 380px; padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; margin: 8px 0 12px; outline: none; }
+           .portal-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+           table { width: 100% !important; background: #fff; border-collapse: separate !important; border-spacing: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(15,23,42,0.05); margin-bottom: 24px; }
+           th { background: #f8fafc !important; color: #334155 !important; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 14px !important; border-bottom: 1px solid var(--border) !important; }
+           td { padding: 12px 14px !important; border-bottom: 1px solid #f1f5f9 !important; font-size: 13.5px; vertical-align: middle !important; }
+           tr.layer-row { cursor: pointer; transition: background 0.15s; }
+           tr.layer-row:hover td, tr.layer-row.active-row td { background: #eff6ff !important; }
+           .color-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+           .pill-crs { display: inline-block; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+           .pill-cnt { display: inline-block; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+           .pill-warn { display: inline-block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+           .field-wrap { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #475569; max-width: 520px; word-break: break-word; }
+         </style>
+         <script>
+         function initPortal() {
+           if (document.querySelector(".portal-sticky-top")) return;
+           const palette = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#ec4899", "#84cc16"];
+           const layerColors = {};
+           let colorIdx = 0;
+           function getColor(name) {
+             if (!layerColors[name]) { layerColors[name] = palette[colorIdx % palette.length]; colorIdx++; }
+             return layerColors[name];
+           }
+           // 1. Replace default FME page header with fixed portal header + KPIs wrapper
+           document.querySelectorAll("h1, h2").forEach(h => {
+             if (h.textContent.trim().toLowerCase() === "gis data catalog") h.style.display = "none";
+           });
+           const stickyTop = document.createElement("div");
+           stickyTop.className = "portal-sticky-top";
+           const nav = document.createElement("div");
+           nav.className = "portal-nav";
+           nav.innerHTML = "<h1>GIS Data Catalog</h1><span>Spatial Footprint, Schema &amp; Quality Portal</span>";
+           stickyTop.appendChild(nav);
+           document.body.prepend(stickyTop);
+           // 2. Style Tables & Compute KPIs
+           const layerRows = {};
+           let totalLayers = 0, totalFeatures = 0, crsSet = new Set(), warnCount = 0;
+           document.querySelectorAll("table").forEach(tbl => {
+             const headers = Array.from(tbl.querySelectorAll("th")).map(h => h.textContent.trim().toLowerCase());
+             const rows = Array.from(tbl.querySelectorAll("tbody tr, tr")).filter(r => r.querySelectorAll("td").length > 0);
+             if (headers.includes("crs") && headers.includes("count")) {
+               totalLayers += rows.length;
+               const search = document.createElement("input");
+               search.className = "portal-search";
+               search.placeholder = "Filter layers, CRS, or field names...";
+               search.addEventListener("input", e => {
+                 const q = e.target.value.toLowerCase();
+                 rows.forEach(r => r.style.display = r.textContent.toLowerCase().includes(q) ? "" : "none");
+               });
+               tbl.parentNode.insertBefore(search, tbl);
+               rows.forEach(r => {
+                 const cells = r.querySelectorAll("td");
+                 const layerName = cells[0] ? cells[0].textContent.trim() : "";
+                 const clr = getColor(layerName);
+                 if (layerName) {
+                   r.classList.add("layer-row");
+                   r.dataset.layer = layerName;
+                   layerRows[layerName] = r;
+                 }
+                 if (cells[0]) cells[0].innerHTML = '<span class="color-dot" style="background:' + clr + '"></span><strong>' + layerName + "</strong>";
+                 if (cells[1]) { crsSet.add(cells[1].textContent.trim()); cells[1].innerHTML = '<span class="pill-crs">' + cells[1].textContent + "</span>"; }
+                 if (cells[2]) { totalFeatures += parseInt(cells[2].textContent, 10) || 0; cells[2].innerHTML = '<span class="pill-cnt">' + cells[2].textContent + "</span>"; }
+                 if (cells[3]) cells[3].innerHTML = '<div class="field-wrap">' + cells[3].textContent + "</div>";
+               });
+             } else if (headers.includes("status")) {
+               warnCount += rows.length;
+               rows.forEach(r => {
+                 const cells = r.querySelectorAll("td");
+                 if (cells[1]) cells[1].innerHTML = '<span class="pill-warn">' + cells[1].textContent + "</span>";
+               });
+             }
+           });
+           const kpis = document.createElement("div");
+           kpis.className = "portal-kpis";
+           kpis.innerHTML =
+             '<div class="kpi-card"><div class="kpi-label">Cataloged Layers</div><div class="kpi-val">' + totalLayers + '</div></div>' +
+             '<div class="kpi-card"><div class="kpi-label">Total Features</div><div class="kpi-val">' + totalFeatures.toLocaleString() + '</div></div>' +
+             '<div class="kpi-card"><div class="kpi-label">Coordinate Systems</div><div class="kpi-val">' + crsSet.size + '</div></div>' +
+             '<div class="kpi-card"><div class="kpi-label">File Warnings</div><div class="kpi-val" style="color:#dc2626">' + warnCount + '</div></div>';
+           stickyTop.appendChild(kpis);
+           function syncTopOffset() {
+             const offset = stickyTop.getBoundingClientRect().height + 16;
+             document.body.style.setProperty("padding-top", offset + "px", "important");
+             document.documentElement.style.scrollPaddingTop = offset + "px";
+           }
+           syncTopOffset();
+           window.addEventListener("resize", syncTopOffset);
+           if (typeof ResizeObserver !== "undefined") {
+             new ResizeObserver(syncTopOffset).observe(stickyTop);
+           }
+           // 3. Colorize Bar Chart to match each layer
+           if (typeof Chart !== "undefined") {
+             document.querySelectorAll("canvas").forEach(cv => {
+               const ch = (Chart.getChart && Chart.getChart(cv)) || (Chart.instances && Object.values(Chart.instances)[0]);
+               if (ch && ch.data && ch.data.labels && ch.data.datasets[0]) {
+                 const clrs = ch.data.labels.map(lbl => getColor(String(lbl).trim()));
+                 ch.data.datasets[0].backgroundColor = clrs.map(c => c + "cc");
+                 ch.data.datasets[0].borderColor = clrs;
+                 ch.data.datasets[0].borderWidth = 2;
+                 ch.update();
+               }
+             });
+           }
+           // 4. Enhance Leaflet Map (Esri Satellite & Topo + Location Search + Synced Colors & Click)
+           if (typeof L !== "undefined") {
+             let fmeMap = null;
+             for (const k in window) {
+               try { if (window[k] instanceof L.Map) { fmeMap = window[k]; break; } } catch (e) {}
+             }
+             if (fmeMap) {
+               const satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { attribution: "Esri Imagery" });
+               const topo = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", { attribution: "Esri Topo" });
+               const footprintGroup = L.layerGroup().addTo(fmeMap);
+               const spatialByName = {};
+               fmeMap.eachLayer(lyr => {
+                 if (lyr instanceof L.Path || lyr instanceof L.FeatureGroup) {
+                   const popupText = lyr.getPopup ? (lyr.getPopup() ? String(lyr.getPopup().getContent()).replace(/<[^>]+>/g, "").trim() : "") : "";
+                   if (popupText) {
+                     spatialByName[popupText] = lyr;
+                     const clr = getColor(popupText);
+                     if (lyr.setStyle) lyr.setStyle({ color: clr, fillColor: clr, fillOpacity: 0.22, weight: 2.5 });
+                     lyr.on("click", () => {
+                       document.querySelectorAll("tr.layer-row").forEach(tr => tr.classList.remove("active-row"));
+                       if (layerRows[popupText]) {
+                         layerRows[popupText].classList.add("active-row");
+                         layerRows[popupText].scrollIntoView({ behavior: "smooth", block: "center" });
+                       }
+                     });
+                   }
+                   if (lyr instanceof L.Path) footprintGroup.addLayer(lyr);
+                 }
+               });
+               L.control.layers(
+                 { "Esri Satellite": satellite, "Esri Topographic": topo },
+                 { "Layer Footprints": footprintGroup },
+                 { position: "topright", collapsed: false }
+               ).addTo(fmeMap);
+               const SearchCtrl = L.Control.extend({
+                 options: { position: "topleft" },
+                 onAdd: function () {
+                   const div = L.DomUtil.create("div", "map-loc-box");
+                   div.innerHTML = '<input type="text" placeholder="Search city or place..." /><button type="button">Go</button>';
+                   L.DomEvent.disableClickPropagation(div);
+                   const inp = div.querySelector("input"), btn = div.querySelector("button");
+                   let pin = null;
+                   const go = () => {
+                     const q = inp.value.trim();
+                     if (!q) return;
+                     fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q))
+                       .then(r => r.json())
+                       .then(d => {
+                         if (d && d[0]) {
+                           const lat = parseFloat(d[0].lat), lon = parseFloat(d[0].lon);
+                           if (pin) fmeMap.removeLayer(pin);
+                           pin = L.marker([lat, lon]).addTo(fmeMap).bindPopup(d[0].display_name).openPopup();
+                           fmeMap.flyTo([lat, lon], 13);
+                         }
+                       });
+                   };
+                   btn.addEventListener("click", go);
+                   inp.addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+                   return div;
+                 }
+               });
+               new SearchCtrl().addTo(fmeMap);
+               // Force top-left controls (zoom + search bar) to sit side-by-side
+               const topLeft = fmeMap.getContainer().querySelector(".leaflet-top.leaflet-left");
+               if (topLeft) {
+                 topLeft.style.setProperty("display", "flex", "important");
+                 topLeft.style.setProperty("flex-direction", "row", "important");
+                 topLeft.style.setProperty("align-items", "flex-start", "important");
+                 topLeft.style.setProperty("gap", "8px", "important");
+                 topLeft.style.setProperty("padding", "10px 0 0 10px", "important");
+                 topLeft.querySelectorAll(".leaflet-control").forEach(ctrl => {
+                   ctrl.style.setProperty("margin", "0", "important");
+                   ctrl.style.setProperty("float", "none", "important");
+                   ctrl.style.setProperty("clear", "none", "important");
+                 });
+               }
+               Object.keys(layerRows).forEach(name => {
+                 layerRows[name].addEventListener("click", () => {
+                   document.querySelectorAll("tr.layer-row").forEach(tr => tr.classList.remove("active-row"));
+                   layerRows[name].classList.add("active-row");
+                   const target = spatialByName[name];
+                   if (target && target.getBounds) {
+                     fmeMap.fitBounds(target.getBounds(), { padding: [30, 30], maxZoom: 16 });
+                     if (target.openPopup) target.openPopup();
+                     document.querySelector(".leaflet-container").scrollIntoView({ behavior: "smooth", block: "center" });
+                   }
+                 });
+               });
+             }
+           }
+         }
+         if (document.readyState === "loading") {
+           document.addEventListener("DOMContentLoaded", initPortal);
+         } else {
+           initPortal();
+         }
+         </script>
+      </div>
+      <div style="padding:10px;border: 1px none black">
+               <H2 style="color:rgb(0,0,0)" class="text-left">Unread / Incomplete Files</H2>
+               <table class="table table-bordered">
+                  <thead>
+                     <tr>
+                        <th>File</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>C:\Users\Vishnu N V\Downloads\sample_gis_catalog_data\Utility\corrupt_data.geojson</td>
+                        <td>FAILED</td>
+                        <td>Failed to obtain any schemas from reader 'GENERIC' from 1 datasets. This may be due to invalid datasets or format accessibility issues due to licensing, dependencies, or module loading. See logfile for more information</td>
+                     </tr>
+                     <tr>
+                        <td>C:\Users\Vishnu N V\Downloads\sample_gis_catalog_data\Sample_Data\random_locations_100.shp</td>
+                        <td>MISSING SIDECAR</td>
+                        <td>Found only: prj,shp,shx</td>
+                     </tr>
+                     <tr>
+                        <td>C:\Users\Vishnu N V\Downloads\sample_gis_catalog_data\Sample_Data\corrupt_polygon.shp</td>
+                        <td>MISSING SIDECAR</td>
+                        <td>Found only: shp</td>
+                     </tr>
+                  </tbody>
+               </table>
+         <style>
+           body { background: #f1f5f9 !important; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important; color: #0f172a; }
+           h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 20px 0 10px; }
+           .portal-search { width: 100%; max-width: 380px; padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; margin: 4px 0 12px; outline: none; background: #fff; }
+           .portal-search:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+           table { width: 100% !important; background: #fff; border-collapse: separate !important; border-spacing: 0; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(15,23,42,0.05); margin-bottom: 24px; }
+           th { background: #f8fafc !important; color: #334155 !important; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 14px !important; border-bottom: 1px solid #e2e8f0 !important; }
+           td { padding: 12px 14px !important; border-bottom: 1px solid #f1f5f9 !important; font-size: 13.5px; vertical-align: middle !important; }
+           tr:hover td { background: #f8fafc; }
+           .color-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+           .pill-warn { display: inline-block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+           .field-wrap { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #475569; max-width: 520px; word-break: break-word; }
+         </style>
+         <script>
+         document.addEventListener("DOMContentLoaded", function () {
+           document.querySelectorAll("table").forEach(tbl => {
+             const headers = Array.from(tbl.querySelectorAll("th")).map(h => h.textContent.trim().toLowerCase());
+             if (!headers.includes("status")) return;
+             const rows = Array.from(tbl.querySelectorAll("tbody tr, tr")).filter(r => r.querySelectorAll("td").length > 0);
+             const search = document.createElement("input");
+             search.className = "portal-search";
+             search.placeholder = "Filter files, status, or details...";
+             search.addEventListener("input", e => {
+               const q = e.target.value.toLowerCase();
+               rows.forEach(r => r.style.display = r.textContent.toLowerCase().includes(q) ? "" : "none");
+             });
+             tbl.parentNode.insertBefore(search, tbl);
+             rows.forEach(r => {
+               const cells = r.querySelectorAll("td");
+               if (cells[0]) cells[0].innerHTML = '<span class="color-dot" style="background:#ef4444"></span><strong>' + cells[0].textContent + "</strong>";
+               if (cells[1]) cells[1].innerHTML = '<span class="pill-warn">' + cells[1].textContent + "</span>";
+               if (cells[2]) cells[2].innerHTML = '<div class="field-wrap">' + cells[2].textContent + "</div>";
+             });
+           });
+         });
+         </script>
+      </div>
+   </body>
+</html>
+
